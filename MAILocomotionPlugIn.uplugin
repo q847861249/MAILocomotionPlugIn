@@ -18,7 +18,7 @@
 		{
 			"Name": "MAILocomotionPlugIn",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault"
 		}
 	]
 }
