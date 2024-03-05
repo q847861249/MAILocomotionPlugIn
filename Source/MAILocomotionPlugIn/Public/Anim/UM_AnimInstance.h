@@ -7,6 +7,7 @@
 
 #include "./UM_ActorComponent.h"
 #include "./M_DataAsset.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Animation/AnimInstanceProxy.h"
 
@@ -43,11 +44,15 @@ public:
 
 	UUM_ActorComponent* getPlugInActorComponent(UAnimInstance* InAnimInstance);
 
+
+
 public:
 
 	//*用户创建的动作数组* 非常重要
 	UPROPERTY(Transient)
 	FLcomotion LocomotionAnimSet;
+
+
 
 public:
 
@@ -55,9 +60,9 @@ public:
 	UPROPERTY(Transient)
 	FGameplayTag CurrentAnimationTag;
 
-	//最近的基础动作
+	//运动组件
 	UPROPERTY(Transient)
-	ECharacterState CurrentCharacterState_ANI = ECharacterState::Jog;
+	UCharacterMovementComponent* MovementComponent;
 
 
 };
@@ -94,6 +99,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	UAnimSequence* getLocomotionAnimation(ECharacterLcomotionState currentstate);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	UCharacterMovementComponent* getCharacterMovementComponent() { return Proxy.MovementComponent; };
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	FLcomotion LocomotionSet() { return Proxy.LocomotionAnimSet; };
+
 
 	
 };

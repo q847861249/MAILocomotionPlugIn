@@ -149,6 +149,61 @@ public:
 	FAnim4Direction CrouchStopCardinals;
 };
 
+USTRUCT(Blueprintable)
+struct FAimSet_Jump {
+
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* JumpStart;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* JumpApex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* JumpFallLand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* JumpRecoveryAdditive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* JumpStartLoop;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* JumpFallLoop;
+
+
+
+	//Î´¸Ä
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName GroundDistanceCruveName;
+};
+
+
+USTRUCT(Blueprintable)
+struct FIdle_Break {
+
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool WnatsIdleBreak;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TimeUntilNextIdleBreak;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 CurrentIdleBreakIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float IdleBreakDelayTime;
+
+};
+
+
+
 
 USTRUCT(Blueprintable)
 struct FLcomotion
@@ -181,6 +236,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FAimSet_Stops AimSet_Stops;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FAimSet_Jump AimSet_Jump;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FIdle_Break IdleBreak;
 
 
 };

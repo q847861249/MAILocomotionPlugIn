@@ -33,8 +33,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Replicated, Category = "M_DataAsset")
 	FGameplayTag CurrentAnimationTag;
 
-	UPROPERTY(EditDefaultsOnly, Replicated, Category = "M_DataAsset")
-	ECharacterState CurrentCharacterState;
 
 		
 };

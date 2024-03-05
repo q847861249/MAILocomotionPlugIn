@@ -8,7 +8,16 @@ void FM_AnimInstanceProxy::InitializeObjects(UAnimInstance* InAnimInstance)
 {
 	Super::InitializeObjects(InAnimInstance);
 
+	APawn* Owner = InAnimInstance->TryGetPawnOwner();
+	if (IsValid(Owner)) {
+		MovementComponent = Cast<UCharacterMovementComponent>(Owner->GetMovementComponent());
+	}
 
+
+	
+		
+
+	
 }
 
 void FM_AnimInstanceProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds)
@@ -19,11 +28,26 @@ void FM_AnimInstanceProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaS
 void FM_AnimInstanceProxy::Update(float DeltaSeconds)
 {
 	Super::Update(DeltaSeconds);
+
 }
 
 FLcomotion FM_AnimInstanceProxy::getTaggedAnimationDataSet(UUM_ActorComponent* LocomotionComponent)
 {
-	return FLcomotion();
+	FLcomotion AnimationDataAsset_Return;
+
+	if (LocomotionComponent->CurrentAnimationTag.IsValid()) {
+
+		//同步标签和最近动作状态
+		CurrentAnimationTag = LocomotionComponent->CurrentAnimationTag;
+	}
+	for (FLcomotion locomotion : LocomotionComponent->AnimationDataAsset->AnimationSet) {
+
+		if (locomotion.AnimationTag == LocomotionComponent->CurrentAnimationTag) {
+			AnimationDataAsset_Return = locomotion;
+		}
+	}
+
+	return AnimationDataAsset_Return;
 }
 
 UUM_ActorComponent* FM_AnimInstanceProxy::getPlugInActorComponent(UAnimInstance* InAnimInstance)
@@ -46,7 +70,7 @@ void UUM_AnimInstance::NativeBeginPlay()
 	if (Proxy.getPlugInActorComponent(this)) {
 
 		Proxy.LocomotionAnimSet = Proxy.getTaggedAnimationDataSet(Proxy.getPlugInActorComponent(this));
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
 
 	}
 

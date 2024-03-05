@@ -31,7 +31,5 @@ void UUM_ActorComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 	DOREPLIFETIME(UUM_ActorComponent, AnimationDataAsset);
 
 	DOREPLIFETIME(UUM_ActorComponent, CurrentAnimationTag);
-
-	DOREPLIFETIME(UUM_ActorComponent, CurrentCharacterState);
 }
 
