@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Animation/AnimInstanceProxy.h"
+#include "Animation/AnimData/BoneMaskFilter.h"
 
 #include "UM_AnimInstance.generated.h"
 
@@ -64,6 +65,10 @@ public:
 	UPROPERTY(Transient)
 	UCharacterMovementComponent* MovementComponent;
 
+	//运动组件
+	UPROPERTY(Transient)
+	USkeletalMeshComponent* SkeletalMeshComponent;
+
 
 };
 
@@ -98,14 +103,19 @@ public:
 	FLcomotion getCurrentLocomotionSet();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
-	UAnimSequence* getLocomotionAnimation(ECharacterLcomotionState currentstate);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	UCharacterMovementComponent* getCharacterMovementComponent() { return Proxy.MovementComponent; };
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	FLcomotion LocomotionSet() { return Proxy.LocomotionAnimSet; };
 
+
+
+
+public:
+	UFUNCTION(meta = (BlueprintThreadSafe))
+	TArray<FInputBlendPose> getLayerSetting() const { return Proxy.LocomotionAnimSet.AnimSetAiming.BoneBlendForAnimFirePose; } ;
+
+//The function here is helping function
 
 	
 };

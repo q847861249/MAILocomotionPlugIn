@@ -7,8 +7,14 @@
 
 #include "Animation/AnimSequence.h"
 #include "GameplayTagContainer.h"
+#include "Animation/AimOffsetBlendSpace.h"
+#include "ControlRig.h"
+#include "Animation/BlendSpace1D.h"
+
+#include "Animation/AnimData/BoneMaskFilter.h"
 
 #include "M_DataAsset.generated.h"
+
 
 
 struct FGameplayTag;
@@ -40,6 +46,50 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UAnimSequence* Right;
+};
+
+
+USTRUCT(Blueprintable)
+struct FAnimLean {
+
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool EnbaleLean;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Lean_Left;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Lean_Middle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Lean_Right;
+
+};
+
+
+
+USTRUCT(Blueprintable)
+struct FStartAngleDirection {
+
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Forward_180L;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Forward_180R;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Forward_90L;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimSequence* Forward_90R;
 };
 
 
@@ -107,6 +157,9 @@ struct FAimSet_Pivots {
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
+	bool EnablePivot;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
 	FAnim4Direction JogPivotCardinals;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
@@ -126,10 +179,19 @@ public:
 	FAnim4Direction JogStartCardinals;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
+	FStartAngleDirection JogStartOrient;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
 	FAnim4Direction ADSStartCardinals;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
+	FStartAngleDirection ADSS_StartOrient;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
 	FAnim4Direction CrouchStartCardinals;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
+	FStartAngleDirection Crouch_StartOrient;
 };
 
 
@@ -148,6 +210,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "Animation"))
 	FAnim4Direction CrouchStopCardinals;
 };
+
+
+
 
 USTRUCT(Blueprintable)
 struct FAimSet_Jump {
@@ -173,13 +238,58 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimSequence* JumpFallLoop;
 
-
-
-	//Î´¸Ä
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName GroundDistanceCruveName;
+	FName GroundDistanceCruveName = "GroundDistance";
 };
 
+USTRUCT(Blueprintable)
+struct FSetting {
+
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float strideWarpingStartAlpha = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float strideWarpingPivottAlpha = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float strideWarpingCycletAlpha = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "FootIk"))
+	FName LeftFoot = "foot_l";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "FootIk"))
+	FName RightFoot = "foot_r";
+
+
+};
+
+
+USTRUCT(Blueprintable)
+struct FTrun_In_Place {
+	
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool EnableTurnInPlace;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* TurnInPlaceLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* TurnInPlaceRight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* CrouchTurnInPlaceLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimSequence* CrouchTurnInPlaceRight;
+
+};
 
 USTRUCT(Blueprintable)
 struct FIdle_Break {
@@ -204,6 +314,38 @@ public:
 
 
 
+USTRUCT(Blueprintable)
+struct FAnimSet_Aiming {
+
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UpperBody")
+	bool bBlendUppterBody;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UpperBody")
+	TArray<FInputBlendPose> BoneBlendForAnimFirePose;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animing")
+	bool AvctiveAiming;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animing")
+	UAnimSequence* AimHipFirePose;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animing")
+	UAnimSequence* AimHipFirePoseCrouch;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animing")
+	UAimOffsetBlendSpace* IdleAimOffset;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animing")
+	UAimOffsetBlendSpace* RelaxedAimOffset;
+
+
+};
+
+
 
 USTRUCT(Blueprintable)
 struct FLcomotion
@@ -215,9 +357,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "AnimationItemTag"))
 	FGameplayTag AnimationTag;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName LocomotionDistanceCurveName = "Distance";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FAnimLean BlendPoseLean;
+
+
 
 
 public:
+
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FAimSet_Walk AnimSet_Walk;
@@ -243,6 +394,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FIdle_Break IdleBreak;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FTrun_In_Place TurnInPlace;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FAnimSet_Aiming AnimSetAiming;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FSetting Setting;
 
 };
 
@@ -258,5 +417,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "AnimData"))
 	TArray<FLcomotion> AnimationSet;
+
+
+
 	
 };
