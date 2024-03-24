@@ -6,6 +6,13 @@
 #include "Anim/UM_AnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Actor.h"
+#include "./MovementComponent/M_MovementComponent.h"
+#include "./Debug/Debug.h"
+
+#include "Kismet/KismetSystemLibrary.h"
+
+#include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 
@@ -28,47 +35,33 @@ void UUM_ActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	//try to get character information
+	ACharacter* character = Cast<ACharacter>(GetOwner());
+	if (character) {
+		CharacterMeshComponent = character->GetMesh();
+		CharacterMovmentComponent = Cast<UM_MovementComponent>(GetOwner());
+		if (!CharacterMovmentComponent) return;
+	}
 
 }
 
 void UUM_ActorComponent::checkAuthority()
 {
-
 	if (GetOwner()->HasAuthority()) {
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Sever!"));
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Client!"));
-
 	}
-
-
 }
 
 
 
 void UUM_ActorComponent::setCurrentAnimationTag_Implementation(FGameplayTag tag)
 {
-	ACharacter* character;
 	CurrentAnimationTag = tag;
 
-
-
-
-	character = Cast<ACharacter>(GetOwner());
-	check(character);
-
-
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *character->GetName()));
-	characterMesh = character->GetMesh();
-
-	characterMesh->GetDefaultAnimatingRigOverride();
-
-
-	UUM_AnimInstance* aimInstance = Cast<UUM_AnimInstance>(characterMesh->GetAnimInstance());
-
-
+	UUM_AnimInstance* aimInstance = Cast<UUM_AnimInstance>(CharacterMeshComponent->GetAnimInstance());
 
 	if (IsValid(aimInstance)) {
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
@@ -84,7 +77,8 @@ void UUM_ActorComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 
 	DOREPLIFETIME(UUM_ActorComponent, CurrentAnimationTag);
 
-	DOREPLIFETIME(UUM_ActorComponent, characterMesh);
+	DOREPLIFETIME(UUM_ActorComponent, CharacterMeshComponent);
+
+	DOREPLIFETIME(UUM_ActorComponent, CharacterMovmentComponent);
 
 }
-

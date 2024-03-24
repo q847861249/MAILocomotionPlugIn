@@ -10,6 +10,10 @@
 
 #include "UM_ActorComponent.generated.h"
 
+class UM_MovementComponent;
+class UAnimMontage;
+class UAnimInstance;
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -21,32 +25,32 @@ public:
 	// Sets default values for this component's properties
 	UUM_ActorComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
-
-public:
-	UPROPERTY(EditDefaultsOnly, Replicated, Category = "M_DataAsset")
+	UPROPERTY(EditDefaultsOnly, Replicated, Category = CharacterInformation)
 	UM_DataAsset* AnimationDataAsset;
 
-	UPROPERTY(EditDefaultsOnly, Replicated, Category = "M_DataAsset")
+	UPROPERTY(EditDefaultsOnly, Replicated, Category = CharacterInformation)
 	FGameplayTag CurrentAnimationTag;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	USkeletalMeshComponent* characterMesh;
+protected:
 
-	UPROPERTY(EditAnywhere, Category = Settings)
+
+	UPROPERTY(EditAnywhere, Category = AnimationSettings)
 	FAnimNode_ControlRig Node;
 
+	UM_MovementComponent* CharacterMovmentComponent;
+	USkeletalMeshComponent* CharacterMeshComponent;
+
+
+	// Called when the game starts
+	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
 	void checkAuthority();
 
-		
 	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
 	void setCurrentAnimationTag(FGameplayTag tag);
+
+	friend class UM_MovementComponent;
 
 
 };
